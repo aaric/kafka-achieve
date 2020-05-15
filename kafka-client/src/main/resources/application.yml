@@ -35,9 +35,12 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAPSERVERS:127.0.0.1:9092}
     consumer:
-      group-id: ${KAFKA_CONSUMER_GROUP_ID:zs-gateway}
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:test}
+      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       max-poll-records: 50
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
     topic:
       tbox: test
