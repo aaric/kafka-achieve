@@ -26,7 +26,7 @@ public class KafkaConfig implements InitializingBean {
     @KafkaListener(topics = "${topicName}", concurrency = "12")
     public void processTopicTBox(ConsumerRecord<String, String> record) {
         // 打印日志
-        log.debug("{}: {}", record.key(), record.value());
+        log.debug("{} -> {}", record.key(), record.value());
 
     }
 
