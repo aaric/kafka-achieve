@@ -2,7 +2,6 @@ package com.sample.kafka.runner;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +10,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListener;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +22,7 @@ import java.util.Map;
  */
 @Slf4j
 @Order(1)
-@Component
+//@Component
 public class KafkaClientRunner implements CommandLineRunner {
 
     @Value("${spring.kafka.topic.tbox}")
@@ -52,7 +50,8 @@ public class KafkaClientRunner implements CommandLineRunner {
         consumerProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         consumerProps.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 100);
         consumerProps.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 15000);
-        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        consumerProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
+        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
         ContainerProperties consumerContainerProps = new ContainerProperties(kafkaTopic);
@@ -63,6 +62,13 @@ public class KafkaClientRunner implements CommandLineRunner {
         DefaultKafkaConsumerFactory<Integer, String> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerProps);
         KafkaMessageListenerContainer<Integer, String> consumerListenerContainer = new KafkaMessageListenerContainer<>(consumerFactory, consumerContainerProps);
         consumerListenerContainer.setBeanName("consumerListenerContainer");
+
+        /*ConcurrentKafkaListenerContainerFactory<Integer, String> factory = new ConcurrentKafkaListenerContainerFactory();
+        factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        factory.setBatchListener(true);
+        factory.setConcurrency(4);*/
+
         consumerListenerContainer.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

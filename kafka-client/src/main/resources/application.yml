@@ -36,11 +36,14 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAPSERVERS:127.0.0.1:9092}
     consumer:
       group-id: ${KAFKA_CONSUMER_GROUP_ID:test}
-      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       max-poll-records: 50
     producer:
-      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    listener:
+      # kafka调优：指定并行消费线程数量，必须小于或等于分区数量
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:12}
     topic:
       tbox: test
