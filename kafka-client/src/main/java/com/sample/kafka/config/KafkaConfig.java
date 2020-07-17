@@ -23,11 +23,11 @@ public class KafkaConfig implements InitializingBean {
 //
 //    }
 
-    @KafkaListener(topics = "${topicName}", concurrency = "12")
+    @KafkaListener(topics = "${topicName}", concurrency = "${spring.kafka.listener.concurrency}")
     public void processTopicTBox(ConsumerRecord<String, String> record) {
         // 打印日志
-        log.debug("{} -> {}", record.key(), record.value());
-
+        log.info("Record, key: {}, partition: {}, offset: {}, timestamp={}.",
+                record.key(), record.partition(), record.offset(), record.timestamp());
     }
 
     @Override

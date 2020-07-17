@@ -42,5 +42,8 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    listener:
+      # kafka调优：指定并行消费线程数量，必须小于或等于分区数量
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:12}
     topic:
       tbox: test
