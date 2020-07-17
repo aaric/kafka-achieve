@@ -50,6 +50,7 @@ public class KafkaClientRunner implements CommandLineRunner {
         consumerProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         consumerProps.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 100);
         consumerProps.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 15000);
+        consumerProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
@@ -61,6 +62,13 @@ public class KafkaClientRunner implements CommandLineRunner {
         DefaultKafkaConsumerFactory<Integer, String> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerProps);
         KafkaMessageListenerContainer<Integer, String> consumerListenerContainer = new KafkaMessageListenerContainer<>(consumerFactory, consumerContainerProps);
         consumerListenerContainer.setBeanName("consumerListenerContainer");
+
+        /*ConcurrentKafkaListenerContainerFactory<Integer, String> factory = new ConcurrentKafkaListenerContainerFactory();
+        factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        factory.setBatchListener(true);
+        factory.setConcurrency(4);*/
+
         consumerListenerContainer.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
